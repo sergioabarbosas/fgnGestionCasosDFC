@@ -1,23 +1,40 @@
 import React, { useState } from 'react';
-import { Box, IconButton, TextField } from '@mui/material';
+import { Box, Chip, IconButton, TextField } from '@mui/material';
 import mainPageStyles from '../styles/mainPageStyles';
 import { InputAdornment, Tooltip } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import SearchIcon from '@mui/icons-material/Search';
+import CheckIcon from '@mui/icons-material/Check';
 import Header from '../components/header';
 import BusquedaUnificada from './BusquedaUnificada'
-//import { useNavigate } from 'react-router-dom';
 
+const ALL_SOURCES = ['casos', 'uiaf', 'gic'];
+
+const SOURCE_COLORS = {
+  casos: '#005e79', //'#b45309', //007494
+  uiaf: '#7a0033', //'#866200', //#7a005f 
+  gic: '#007a58',
+  //disponible: '#7a0033' //'#00497a',
+};
 
 export default function MainPage() {
 
-  const [form, setForm] = useState({ inputText: '' });
+  const [form, setForm] = useState({ radicado: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [results, setResults] = useState(null);
   const [hasSearched, setHasSearched] = useState(false);
 
   //const navigate = useNavigate();
+  const [selectedSources, setSelectedSources] = useState([]);
+
+  const toggleSource = (source) => {
+    setSelectedSources((prev) =>
+      prev.includes(source)
+        ? prev.filter((s) => s !== source)
+        : [...prev, source]
+    );
+  };
 
   const doFetch = async (payload) => {
     const res = await fetch('http://10.105.15.143:5000/api/busqueda', {    // provisional
@@ -34,18 +51,27 @@ export default function MainPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const query = form.inputText.trim();
+    const query = form.radicado.trim();
     if (!query) return;
+    if (selectedSources.length === 0) {
+      setError('Seleccione al menos una fuente');
+      return;
+    }
 
     setLoading(true);
     setHasSearched(true);
+    setError(true);
 
     try {
-      const data = await doFetch({ inputText: query, fuentes: ['casos', 'uiaf', 'gic', 'muif'] });
+      const data = await doFetch({ 
+        radicado: query, 
+        fuentes: selectedSources // selectedSources.map((s) => (s === 'aplica' ? 'casos' : s)) // ***** priovisonal
+      }); // selectedSources
 
       setResults(data);
     } catch (err) {
       console.error(err);
+      setError(err.message || 'No se pudo consultar');
       setHasSearched(false);
     } finally {
       setLoading(false);
@@ -55,13 +81,14 @@ export default function MainPage() {
   if (hasSearched && results) {
     return (
       <BusquedaUnificada
-        query={form.inputText}
+        query={form.radicado}
         resultados={results}
         loading={loading}
+        selectedSources={selectedSources}
         onBack={() => {
             setHasSearched(false);
             setResults(null);
-            setForm({ inputText: '' });
+            setForm({ radicado: '' });
             window.history.replaceState({}, '', window.location.pathname);
             //navigate('/', { replace: true });
           }}
@@ -129,10 +156,56 @@ export default function MainPage() {
             mt: 10,
           }}
         >
+
+          {/* toggle */}
+          {/* <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', justifyContent: 'center', mt: 2 }}> */}
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
+            {/* <Typography variant="caption" sx={{ color: '#5b7280' }}>
+              Seleccione fuente de consulta
+            </Typography> */}
+
+            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', justifyContent: 'center' }}>
+              {ALL_SOURCES.map((source) => {
+                const active = selectedSources.includes(source);
+                const color = SOURCE_COLORS[source];
+                return (
+                  <Chip
+                    key={source}
+                    label={source.toUpperCase()}
+                    onClick={() => toggleSource(source)}
+                    variant="outlined"
+                    icon={active ? <CheckIcon fontSize='small' sx={{ color: '#fff !important' }} /> : undefined}
+                    sx={{
+                      minWidth: 80,
+                      height: 30,
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      borderRadius: '999px',
+                      transition: 'all 0.2s ease',
+                      justifyContent: 'center',
+                      '& .MuiChip-label': {px: 1.5,},
+                      // apagado al inicio
+                      color: active ? '#fff' : '#454c5a',
+                      bgcolor: active ? color : '#fcfdfd',
+                      borderColor: active ? color : '#a5a7a8',
+                      boxShadow: active ? '0 2px 8px rgba(0,0,0,0.12)' : 'none',
+                      opacity: active ? 1 : 0.6,
+                      '&:hover': {
+                        bgcolor: active ? color : '#e5e7eb',
+                        borderColor: active ? color : '#cbd5e1',
+                      },
+                    }}
+                  />
+                  
+                );
+              })}
+            </Box>            
+          </Box>
+
           {/* Input text*/}
           <TextField
-            name="inputText"
-            value={form.inputText}
+            name="radicado"//"inputText"
+            value={form.radicado}
             onChange={handleChange}
             placeholder="Buscar en todas las fuentes de información de la DFC"
             autoFocus
@@ -160,6 +233,7 @@ export default function MainPage() {
               ),
             }}
           />
+
         </Box>
     </Box>
   </Box>

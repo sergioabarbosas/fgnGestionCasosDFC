@@ -2,10 +2,9 @@ import React from 'react';
 import { Card, CardActionArea, CardContent, Typography, Box, Chip } from '@mui/material';
 
 const SOURCE_COLORS = {
-  casos: '#94015b',
-  uiaf: '#047857',
-  gic: '#6d28d9',
-  muif: '#0e7490',
+  casos: '#005e79',
+  uiaf: '#7a0033', 
+  gic: '#007a58',
 };
 
 export default function ResultCard({ item, source, selected, onSelect }) {

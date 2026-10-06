@@ -35,7 +35,7 @@ const mainPageStyles = {
       borderRadius: '999px',
       backgroundColor: '#ffffff',
       color: '#003f52',
-      fontSize: '0.95rem',
+      fontSize: '0.90rem',
       boxShadow: '0 4px 20px rgba(0, 63, 82, 0.12)',
       transition: 'all .25s ease',
       '& fieldset': { borderColor: 'rgba(0, 63, 82, 0.25)' },

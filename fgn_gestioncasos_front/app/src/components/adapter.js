@@ -11,7 +11,7 @@ const normalizePerson = (p, source) => ({
 });
 
 
-// casos
+// aplica
 export const adaptCasos = (r) => ({
   source: 'casos',
   id: r.c_radicado,

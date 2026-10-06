@@ -4,11 +4,9 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ResultCard from './ResultCard';
 
 const SOURCE_COLORS = {
-  // casos: '#b45309',
-  casos: '#94015b',
-  uiaf: '#047857',
-  gic: '#6d28d9',
-  muif: '#0e7490',
+  casos: '#005e79',
+  uiaf: '#7a0033', 
+  gic: '#007a58',
 };
 
 const PAGE_SIZE = 5;

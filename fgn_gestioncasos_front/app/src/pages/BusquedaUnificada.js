@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { Box, Typography } from '@mui/material';
 import SearchTopBar from '../components/search/SearchTopBar';
 import SourceSection from '../components/search/SourceSection';
@@ -6,20 +6,28 @@ import GraphPanel from '../components/search/GraphPanel';
 import DetailPanel from '../components/search/DetailPanel';
 import Header from '../components/header';
 
-const ALL_SOURCES = ['casos', 'uiaf', 'gic', 'muif'];
 
-export default function BusquedaUnificada({ query = '', resultados = {}, loading = false, onBack }) {
-  const [activeSources, setActiveSources] = useState(ALL_SOURCES);
+
+export default function BusquedaUnificada({ query = '', resultados = {}, loading = false, selectedSources=[], onBack }) {
+  const [activeSources, setActiveSources] = useState(selectedSources);
   const [selectedItem, setSelectedItem] = useState(null);
 
+  useEffect(() => {
+    setActiveSources(selectedSources);
+  }, [selectedSources]);
+
   const visibleResults = useMemo(() => {
+    console.info('resultados:', resultados);
+    console.info('selectedSources', selectedSources);
+    console.info('activeSources', activeSources);
+
     const filtered = {};
-    ALL_SOURCES.forEach((source) => {
+    selectedSources.forEach((source) => {
       const list = resultados?.[source] || [];
       filtered[source] = activeSources.includes(source) ? list : [];
     });
     return filtered;
-  }, [resultados, activeSources]);
+  }, [resultados, selectedSources, activeSources]);
 
   const totalResults = Object.values(visibleResults).reduce((acc, list) => acc + list.length, 0);
 
@@ -45,11 +53,12 @@ export default function BusquedaUnificada({ query = '', resultados = {}, loading
         loading={loading}
         activeSources={activeSources}
         toggleSource={toggleSource}
+        selectedSources={selectedSources}
       />
 
       <Box sx={{ px: 3, py: 1, borderBottom: '1px solid #dbe3e8', bgcolor: '#fff' }}>
         <Typography variant="caption" sx={{ color: '#5b7280' }}>
-          {totalResults} Resultados · {activeSources.length}/{ALL_SOURCES.length} Fuentes activas
+          {totalResults} Resultados · {activeSources.length}/{selectedSources.length} Fuentes activas
         </Typography>
       </Box>
 
@@ -66,7 +75,7 @@ export default function BusquedaUnificada({ query = '', resultados = {}, loading
       >
         {/* izq */}
         <Box sx={{ minHeight: 0, overflowY: 'auto', pr: 1 }}>
-          {ALL_SOURCES.map((source) =>
+          {selectedSources.map((source) =>
             activeSources.includes(source) ? (
               <SourceSection
                 key={source}

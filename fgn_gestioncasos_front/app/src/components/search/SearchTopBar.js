@@ -12,10 +12,9 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import mainPageStyles from "../../styles/mainPageStyles";
 
 const SOURCE_COLORS = {
-  casos: '#94015b',
-  uiaf: '#047857',
-  gic: '#6d28d9',
-  muif: '#0e7490',
+  casos: '#005e79',
+  uiaf: '#7a0033', 
+  gic: '#007a58',
 };
 
 export default function SearchTopBar({
@@ -26,8 +25,8 @@ export default function SearchTopBar({
   loading,
   activeSources,
   toggleSource,
+  selectedSources
 }) {
-  const sources = ['casos', 'uiaf', 'gic', 'muif'];
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -88,24 +87,25 @@ export default function SearchTopBar({
       />
 
       <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-        {sources.map((source) => {
+        {selectedSources.map((source) => {
           const active = activeSources.includes(source);
           return (
-            <Chip
-              key={source}
-              label={source.toUpperCase()}
-              onClick={() => toggleSource(source)}
-              variant={active ? 'filled' : 'outlined'}
-              sx={{
-                fontWeight: 700,
-                color: active ? '#fff' : SOURCE_COLORS[source],
-                bgcolor: active ? SOURCE_COLORS[source] : 'transparent',
-                borderColor: SOURCE_COLORS[source],
-                '&:hover': {
-                  bgcolor: active ? SOURCE_COLORS[source] : 'rgba(0,0,0,0.04)',
-                },
-              }}
-            />
+
+              <Chip
+                key={source}
+                label={source.toUpperCase()}
+                onClick={() => toggleSource(source)}
+                variant={active ? 'filled' : 'outlined'}
+                sx={{
+                  fontWeight: 700,
+                  color: active ? '#fff' : SOURCE_COLORS[source],
+                  bgcolor: active ? SOURCE_COLORS[source] : 'transparent',
+                  borderColor: SOURCE_COLORS[source],
+                  '&:hover': {
+                    bgcolor: active ? SOURCE_COLORS[source] : 'rgba(0,0,0,0.04)',
+                  },
+                }}
+              />
           );
         })}
       </Box>
