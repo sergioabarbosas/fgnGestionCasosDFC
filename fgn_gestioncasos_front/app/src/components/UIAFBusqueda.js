@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
   Box, Paper, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions, Pagination, Stack
 } from '@mui/material';
-import camposDescripcionUIAF from './diccionarioColumnasUIAF';
+import camposDescripcionUIAF from './dictionaries/diccionarioColUIAF';
 import { esValorValido, primeraMayus, titleCase, highlightText } from '../utils/textUtils';
 import { mostrarNormalizadoGic as mostrarNormalizado } from '../utils/normalised';
 import usePaginacion from '../utils/usePaginacion';

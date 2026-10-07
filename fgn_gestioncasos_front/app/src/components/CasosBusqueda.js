@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
   Box, Paper, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions, Pagination, Stack
 } from '@mui/material';
-import camposDescripcion from '../components/diccionarioColumnas';
+import camposDescripcion from './dictionaries/diccionarioColCasos';
 import { esValorValido, primeraMayus, highlightText } from '../utils/textUtils';
 import { mostrarNormalizadoCasos as mostrarNormalizado, mostrarSiNo } from '../utils/normalised';
 import usePaginacion from '../utils/usePaginacion';

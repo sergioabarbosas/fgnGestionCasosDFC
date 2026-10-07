@@ -3,7 +3,7 @@ import {
   Box, Paper, Typography, Button, Dialog, 
   DialogTitle, DialogContent, DialogActions, Pagination, Stack
 } from '@mui/material';
-import camposDescripcionGic from '../components/diccionarioColumnasGic';
+import camposDescripcionGic from './dictionaries/diccionarioColGic';
 import { esValorValido, primeraMayus, titleCase, highlightText } from '../utils/textUtils';
 import { mostrarNormalizadoGic as mostrarNormalizado } from '../utils/normalised';
 import usePaginacion from '../utils/usePaginacion';
