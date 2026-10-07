@@ -4,147 +4,123 @@ import {
   DialogTitle, DialogContent, DialogActions, Pagination, Stack
 } from '@mui/material';
 import camposDescripcionGic from '../components/diccionarioColumnasGic';
+import { esValorValido, primeraMayus, titleCase, highlightText } from '../utils/textUtils';
+import { mostrarNormalizadoGic as mostrarNormalizado } from '../utils/normalised';
 
+// function highlightText(text, terms) {
+//   if (text == null) return "";
+//   const safeText = typeof text === "string" ? text : String(text);
+//   if (!terms || (Array.isArray(terms) && terms.length === 0)) return safeText;
 
-function highlightText(text, terms) {
-  if (text == null) return "";
-  const safeText = typeof text === "string" ? text : String(text);
-  if (!terms || (Array.isArray(terms) && terms.length === 0)) return safeText;
+//   const rawTerms = Array.isArray(terms) ? terms : [terms];
 
-  const rawTerms = Array.isArray(terms) ? terms : [terms];
+//   // Construir patrones por término (usar grupos no-capturantes)
+//   const parts = rawTerms.map(t => {
+//     if (t === null || t === undefined) return '';
+//     let s = String(t).trim();
+//     if (!s) return '';
 
-  // Construir patrones por término (usar grupos no-capturantes)
-  const parts = rawTerms.map(t => {
-    if (t === null || t === undefined) return '';
-    let s = String(t).trim();
-    if (!s) return '';
+//     // Frase entre comillas -> frase exacta (espacios colapsados)
+//     if (s.length >= 2 && s[0] === '"' && s[s.length - 1] === '"') {
+//       const inner = s.slice(1, -1).trim();
+//       if (!inner) return '';
+//       const esc = inner.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\s+/g, '\\s+');
+//       return `(?:${esc})`;
+//     }
 
-    // Frase entre comillas -> frase exacta (espacios colapsados)
-    if (s.length >= 2 && s[0] === '"' && s[s.length - 1] === '"') {
-      const inner = s.slice(1, -1).trim();
-      if (!inner) return '';
-      const esc = inner.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\s+/g, '\\s+');
-      return `(?:${esc})`;
-    }
+//     const hasWildcard = s.includes('*') || s.includes('%');
 
-    const hasWildcard = s.includes('*') || s.includes('%');
+//     if (hasWildcard) {
+//       // escapamos todo y luego convertimos los comodines escapados a .*
+//       let escaped = s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+//       escaped = escaped.replace(/\\\*/g, '.*').replace(/\\%/g, '.*');
+//       return `(?:${escaped})`;
+//     }
 
-    if (hasWildcard) {
-      // escapamos todo y luego convertimos los comodines escapados a .*
-      let escaped = s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      escaped = escaped.replace(/\\\*/g, '.*').replace(/\\%/g, '.*');
-      return `(?:${escaped})`;
-    }
+//     // Si contiene espacios -> resaltamos cualquiera de las palabras (OR) 
+//     // (backend debería aplicar AND si corresponde; aquí solo resaltamos ocurrencias)
+//     if (/\s+/.test(s)) {
+//       const toks = s.split(/\s+/).map(tok => tok.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).filter(Boolean);
+//       if (!toks.length) return '';
+//       return `(?:${toks.join('|')})`;
+//     }
 
-    // Si contiene espacios -> resaltamos cualquiera de las palabras (OR) 
-    // (backend debería aplicar AND si corresponde; aquí solo resaltamos ocurrencias)
-    if (/\s+/.test(s)) {
-      const toks = s.split(/\s+/).map(tok => tok.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).filter(Boolean);
-      if (!toks.length) return '';
-      return `(?:${toks.join('|')})`;
-    }
+//     // Término simple: buscar palabra completa usando boundaries
+//     const escapedSingle = s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+//     return `(?:\\b${escapedSingle}\\b)`;
+//   }).filter(Boolean);
 
-    // Término simple: buscar palabra completa usando boundaries
-    const escapedSingle = s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    return `(?:\\b${escapedSingle}\\b)`;
-  }).filter(Boolean);
+//   if (!parts.length) return safeText;
 
-  if (!parts.length) return safeText;
+//   // ordenar por longitud de patrón para priorizar matches más largos (evita fragmentación)
+//   parts.sort((a, b) => b.length - a.length);
 
-  // ordenar por longitud de patrón para priorizar matches más largos (evita fragmentación)
-  parts.sort((a, b) => b.length - a.length);
+//   const regex = new RegExp(parts.join('|'), 'gi');
 
-  const regex = new RegExp(parts.join('|'), 'gi');
+//   // Reconstrucción segura usando posiciones (evita duplicados)
+//   const children = [];
+//   let lastIndex = 0;
+//   let matchIndex = 0;
+//   for (const m of safeText.matchAll(regex)) {
+//     const idx = m.index;
+//     if (typeof idx !== 'number') continue;
+//     // texto antes del match
+//     if (lastIndex < idx) {
+//       children.push(safeText.slice(lastIndex, idx));
+//     }
+//     // el match resaltado
+//     const matchedText = m[0];
+//     children.push(
+//       <span key={`hlt-${matchIndex}`} style={{ backgroundColor: '#f010ddff', color: '#fff' }}>
+//         {matchedText}
+//       </span>
+//     );
+//     matchIndex += 1;
+//     lastIndex = idx + matchedText.length;
+//   }
+//   // resto final
+//   if (lastIndex < safeText.length) {
+//     children.push(safeText.slice(lastIndex));
+//   }
 
-  // Reconstrucción segura usando posiciones (evita duplicados)
-  const children = [];
-  let lastIndex = 0;
-  let matchIndex = 0;
-  for (const m of safeText.matchAll(regex)) {
-    const idx = m.index;
-    if (typeof idx !== 'number') continue;
-    // texto antes del match
-    if (lastIndex < idx) {
-      children.push(safeText.slice(lastIndex, idx));
-    }
-    // el match resaltado
-    const matchedText = m[0];
-    children.push(
-      <span key={`hlt-${matchIndex}`} style={{ backgroundColor: '#f010ddff', color: '#fff' }}>
-        {matchedText}
-      </span>
-    );
-    matchIndex += 1;
-    lastIndex = idx + matchedText.length;
-  }
-  // resto final
-  if (lastIndex < safeText.length) {
-    children.push(safeText.slice(lastIndex));
-  }
-
-  // si no hubo matches devolvemos el string original
-  if (children.length === 0) return safeText;
-  return children;
-}
-
-
-function esValorValido(valor) {
-  if (valor === null || valor === undefined) return false;
-  if (typeof valor === "string" && ["", "null"].includes(valor.trim().toLowerCase())) return false;
-  if (Array.isArray(valor) && valor.length === 0) return false;
-  return true;
-}
-
-function primeraMayus(str) {
-  if (typeof str !== "string") return str;
-  if (!str.length) return str;
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-// Para nombres y Lugares
-function titleCase(str) {
-  if (!str) return "";
-  return String(str).split(/\s+/).map(w => {
-    if (!w) return "";
-    return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
-  }).join(" ");
-}
+//   // si no hubo matches devolvemos el string original
+//   if (children.length === 0) return safeText;
+//   return children;
+// }
 
 // Mostrar valores
-function mostrarNormalizado(valor) {
-  if (valor === null || valor === undefined) return "No aplica";
+// function mostrarNormalizado(valor) {
+//   if (valor === null || valor === undefined) return "No aplica";
 
-  if (Array.isArray(valor)) {
-    if (valor.length === 0) return "No aplica";
-    const textos = valor.map(v => {
-      if (!v || typeof v !== 'object') return String(v);
-      // campos comunes en personas GIC: NombreCompleto, Nombre_1 + Apellido_1
-      const pName = (v.NombreCompleto || `${v.Nombre_1 || ''} ${v.Apellido_1 || ''}`).trim();
-      if (pName) return pName;
-      // fallback por identificacion o Title
-      const eName = (v.Identificacion || v.Title || "").trim();
-      if (eName) return eName;
-      try { return JSON.stringify(v); } catch { return String(v); }
-    }).filter(Boolean);
-    return textos.length ? textos.join(', ') : "No aplica";
-  }
+//   if (Array.isArray(valor)) {
+//     if (valor.length === 0) return "No aplica";
+//     const textos = valor.map(v => {
+//       if (!v || typeof v !== 'object') return String(v);
+//       // campos comunes en personas GIC: NombreCompleto, Nombre_1 + Apellido_1
+//       const pName = (v.NombreCompleto || `${v.Nombre_1 || ''} ${v.Apellido_1 || ''}`).trim();
+//       if (pName) return pName;
+//       // fallback por identificacion o Title
+//       const eName = (v.Identificacion || v.Title || "").trim();
+//       if (eName) return eName;
+//       try { return JSON.stringify(v); } catch { return String(v); }
+//     }).filter(Boolean);
+//     return textos.length ? textos.join(', ') : "No aplica";
+//   }
 
-  if (typeof valor === 'object') {
-    const v = valor;
-    const pName = (v.NombreCompleto || `${v.Nombre_1 || ''} ${v.Apellido_1 || ''}`).trim();
-    if (pName) return pName;
-    const eName = (v.Identificacion || v.Title || "").trim();
-    if (eName) return eName;
-    return "No aplica";
-  }
+//   if (typeof valor === 'object') {
+//     const v = valor;
+//     const pName = (v.NombreCompleto || `${v.Nombre_1 || ''} ${v.Apellido_1 || ''}`).trim();
+//     if (pName) return pName;
+//     const eName = (v.Identificacion || v.Title || "").trim();
+//     if (eName) return eName;
+//     return "No aplica";
+//   }
 
-  if (typeof valor === "string" && valor.trim().toLowerCase() === "n/a") return "No aplica";
-  if (typeof valor === "boolean") return valor ? "Sí" : "No";
-  if (typeof valor === "number") return String(valor);
-  return String(valor);
-}
-
-const PAGE_SIZE = 5;
+//   if (typeof valor === "string" && valor.trim().toLowerCase() === "n/a") return "No aplica";
+//   if (typeof valor === "boolean") return valor ? "Sí" : "No";
+//   if (typeof valor === "number") return String(valor);
+//   return String(valor);
+// }
 
 // Función para renderizar claves y valores (como tabla)
 function renderClaveValor(data, headers, terms) {
@@ -156,6 +132,9 @@ function renderClaveValor(data, headers, terms) {
   ));
 }
 
+// -------------
+
+const PAGE_SIZE = 5;
 
 // Funcion principal
 function GicBusqueda({ resultados = [], mensaje, searchTerms=[], hasSearched=true }) {

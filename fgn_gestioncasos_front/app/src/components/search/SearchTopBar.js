@@ -54,12 +54,13 @@ export default function SearchTopBar({
           variant="contained"
           onClick={onBack}
           startIcon={<ArrowBackIcon />}
-          sx={ mainPageStyles.logoutButton }
+          size='small'
+          sx={ {...mainPageStyles.logoutButton, fontSize: '0.80rem'} }
         >
-          Atrás
+          Nueva Búsqueda
       </Button>
 
-      <TextField
+      <TextField 
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         size="small"

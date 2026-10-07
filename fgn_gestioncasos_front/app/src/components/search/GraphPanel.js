@@ -14,7 +14,7 @@ export default function GraphPanel({ selectedItem, items }) {
       }}
     >
       <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 1 }}>
-        Grafo Cytoscape
+        Grafo
       </Typography>
 
       <Box
@@ -28,7 +28,7 @@ export default function GraphPanel({ selectedItem, items }) {
           color: '#94a3b8',
         }}
       >
-        Aquí irá el grafo
+        ----------- grafo que no tengo aún -----------
       </Box>
     </Box>
   );

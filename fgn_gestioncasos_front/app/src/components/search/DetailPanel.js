@@ -19,7 +19,7 @@ export default function DetailPanel({ selectedItem }) {
 
       {!selectedItem ? (
         <Typography variant="body2" sx={{ color: '#94a3b8' }}>
-          Selecciona una tarjeta para ver el detalle.
+          info del nodo.
         </Typography>
       ) : (
         <>
