@@ -6,77 +6,7 @@ import camposDescripcion from '../components/diccionarioColumnas';
 import { esValorValido, primeraMayus, highlightText } from '../utils/textUtils';
 import { mostrarNormalizadoCasos as mostrarNormalizado, mostrarSiNo } from '../utils/normalised';
 
-// function highlightText(text, terms) {
-//   // Convierte a string si no lo es
-//   if (text == null) return ""; // para null o undefined
-//   const safeText = typeof text === "string" ? text : String(text);
 
-//   if (!terms.length || !safeText) return safeText;
-//   const regex = new RegExp(`(${terms.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})`, 'gi');
-//   return safeText.split(regex).map((part, idx) =>
-//     terms.some(term => part.toLowerCase() === term.toLowerCase())
-//       ? <span key={idx} style={{ backgroundColor: '#f010ddff', color: '#fff' }}>{part}</span>
-//       : part
-//   );
-// }
-
-
-// Normaliza valores para mostrarlos en columnas: convierte arrays/objetos a texto legible
-// function mostrarNormalizado(valor) {
-//   // null / undefined
-//   if (valor === null || valor === undefined) return "No aplica";
-//   // Si es array de objetos (personas/empresas), intentar construir textos legibles
-//   if (Array.isArray(valor)) {
-//     if (valor.length === 0) return "No aplica";
-//     // intentar extraer nombre completo / razon_social / nombre_comercial / c_nit
-//     const textos = valor.map(v => {
-//       if (!v || typeof v !== 'object') return String(v);
-//       // Persona preferencia
-//       const pName = (v.c_nombre_completo || `${v.c_primer_nombre || ''} ${v.c_primer_apellido || ''}`).trim();
-//       if (pName) return pName;
-//       // Empresa preferencia
-//       const eName = (v.c_nombre_comercial || v.c_razon_social || v.c_nit || '').trim();
-//       if (eName) return eName;
-//       // Fallback por radicado
-//       if (v.c_radicado) return `Radicado: ${v.c_radicado}`;
-//       // última opción: stringify seguro
-//       try { return JSON.stringify(v); } catch { return String(v); }
-//     }).filter(Boolean);
-//     return textos.length ? textos.join(', ') : "No aplica";
-//   }
-
-//   // Si es objeto simple, intentar formatear con campos conocidos
-//   if (typeof valor === 'object') {
-//     const v = valor;
-//     const pName = (v.c_nombre_completo || `${v.c_primer_nombre || ''} ${v.c_primer_apellido || ''}`).trim();
-//     if (pName) return pName;
-//     const eName = (v.c_nombre_comercial || v.c_razon_social || v.c_nit || '').trim();
-//     if (eName) return eName;
-//     // fallback a radicado si existe
-//     if (v.c_radicado) return `Radicado: ${v.c_radicado}`;
-//     // Si no hay campos significativos, devolver 'No aplica' en vez de stringify
-//     return "No aplica";
-//   }
-
-//   // Si es string / number / boolean -> tratar 'n/a'
-//   if (typeof valor === "string" && valor.trim().toLowerCase() === "n/a") return "No aplica";
-//   if (typeof valor === "boolean") return valor ? "Sí" : "No";
-//   if (typeof valor === "number") return String(valor);
-//   return String(valor);
-// }
-
-
-// function mostrarSiNo(valor) {
-//   // función para booleanos
-//   if (typeof valor === "boolean") return valor ? "Sí" : "No";
-//   if (typeof valor === "number") return valor === 1 ? "Sí" : "No";
-//   if (typeof valor === "string") {
-//     const v = valor.trim().toLowerCase();
-//     if (v === "1" || v === "si" || v === "sí" || v === "true") return "Sí";
-//     if (v === "0" || v === "no" || v === "false") return "No";
-//   }
-//   return mostrarNormalizado(valor);
-// }
 
 // ---------------
 

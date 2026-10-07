@@ -5,12 +5,7 @@ import ResultCard from './ResultCard';
 import CasosBusqueda from "../CasosBusqueda";
 import GicBusqueda from "../GICBusqueda";
 import UIAFBusqueda from "../UIAFBusqueda"
-
-const SOURCE_COLORS = {
-  casos: '#005e79',
-  uiaf: '#7a0033', 
-  gic: '#007a58',
-};
+import { SOURCE_COLORS } from '../../utils/sourceColors';
 
 const PAGE_SIZE = 5;
 
@@ -27,13 +22,26 @@ export default function SourceSection({ source, items = [], selectedItem, onSele
 
   return (
     
-    <Accordion defaultExpanded sx={{ mb: 2, borderRadius: 2, overflow: 'hidden' }}>
+    <Accordion 
+      defaultExpanded 
+      //sx={{ mb: 2, borderRadius: 2, overflow: 'hidden' }}
+      disableGutters
+      sx={{
+        mb: 2,
+        borderRadius: 4,
+        overflow: 'hidden',
+        border: `2px solid ${SOURCE_COLORS[source]}`,
+        borderLeft: `6px solid ${SOURCE_COLORS[source]}`,
+        boxShadow: 'none',
+      //  '&:before': { display: 'none' },
+      }}
+      >
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <Box
             sx={{
-              width: 10,
-              height: 10,
+              width: 11,
+              height: 11,
               borderRadius: '50%',
               bgcolor: SOURCE_COLORS[source],
             }}

@@ -10,12 +10,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import Button from '@mui/material/Button';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import mainPageStyles from "../../styles/mainPageStyles";
+import { SOURCE_COLORS } from '../../utils/sourceColors';
 
-const SOURCE_COLORS = {
-  casos: '#005e79',
-  uiaf: '#7a0033', 
-  gic: '#007a58',
-};
 
 export default function SearchTopBar({
   query,

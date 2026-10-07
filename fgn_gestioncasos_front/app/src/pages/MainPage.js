@@ -7,15 +7,10 @@ import SearchIcon from '@mui/icons-material/Search';
 import CheckIcon from '@mui/icons-material/Check';
 import Header from '../components/header';
 import BusquedaUnificada from './BusquedaUnificada'
+import { SOURCE_COLORS } from '../utils/sourceColors';
 
 const ALL_SOURCES = ['casos', 'uiaf', 'gic'];
 
-const SOURCE_COLORS = {
-  casos: '#005e79', //'#b45309', //007494
-  uiaf: '#7a0033', //'#866200', //#7a005f 
-  gic: '#007a58',
-  //disponible: '#7a0033' //'#00497a',
-};
 
 export default function MainPage() {
 

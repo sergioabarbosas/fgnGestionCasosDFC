@@ -1,11 +1,6 @@
 import React from 'react';
 import { Button, Card, CardActionArea, CardContent, Typography, Box, Chip, Stack } from '@mui/material';
-
-const SOURCE_COLORS = {
-  casos: '#005e79',
-  uiaf: '#7a0033', 
-  gic: '#007a58',
-};
+import { SOURCE_COLORS } from '../../utils/sourceColors';
 
 
 function highlightText(text, terms = []) {
