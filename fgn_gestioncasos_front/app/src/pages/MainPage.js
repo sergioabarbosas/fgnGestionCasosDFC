@@ -64,7 +64,7 @@ export default function MainPage() {
 
     try {
       const data = await doFetch({ 
-        radicado: query, 
+        libre: query, 
         fuentes: selectedSources // selectedSources.map((s) => (s === 'aplica' ? 'casos' : s)) // ***** priovisonal
       }); // selectedSources
 

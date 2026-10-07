@@ -62,7 +62,6 @@ export default function SearchTopBar({
       <TextField
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder="Buscar en todas las fuentes..."
         size="small"
         sx={{
           flex: 1,
@@ -70,6 +69,14 @@ export default function SearchTopBar({
           '& .MuiOutlinedInput-root': {
             borderRadius: '999px',
             bgcolor: '#f4f7f9',
+            fontSize: '0.80rem',
+          },
+          '& .MuiInputBase-input': {
+            fontSize: '0.80rem',
+          },
+          '& .MuiInputBase-input::placeholder': {
+            fontSize: '0.80rem',
+            opacity: 0.7,
           },
         }}
         InputProps={{
@@ -90,14 +97,14 @@ export default function SearchTopBar({
         {selectedSources.map((source) => {
           const active = activeSources.includes(source);
           return (
-
               <Chip
                 key={source}
                 label={source.toUpperCase()}
                 onClick={() => toggleSource(source)}
                 variant={active ? 'filled' : 'outlined'}
                 sx={{
-                  fontWeight: 700,
+                  fontWeight: 650,
+                  fontSize: '0.75rem',
                   color: active ? '#fff' : SOURCE_COLORS[source],
                   bgcolor: active ? SOURCE_COLORS[source] : 'transparent',
                   borderColor: SOURCE_COLORS[source],

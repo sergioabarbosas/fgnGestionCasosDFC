@@ -7,7 +7,6 @@ import DetailPanel from '../components/search/DetailPanel';
 import Header from '../components/header';
 
 
-
 export default function BusquedaUnificada({ query = '', resultados = {}, loading = false, selectedSources=[], onBack }) {
   const [activeSources, setActiveSources] = useState(selectedSources);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -28,6 +27,11 @@ export default function BusquedaUnificada({ query = '', resultados = {}, loading
     });
     return filtered;
   }, [resultados, selectedSources, activeSources]);
+
+  const searchTerms = useMemo(
+    () => query.trim().split(/\s+/).filter(Boolean),
+    [query]
+  );
 
   const totalResults = Object.values(visibleResults).reduce((acc, list) => acc + list.length, 0);
 
@@ -83,6 +87,7 @@ export default function BusquedaUnificada({ query = '', resultados = {}, loading
                 items={visibleResults[source]}
                 selectedItem={selectedItem}
                 onSelect={setSelectedItem}
+                searchTerms={searchTerms}
               />
             ) : null
           )}
