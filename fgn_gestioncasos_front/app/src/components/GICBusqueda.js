@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import {
-  Box, Paper, Typography, Alert, Button, Dialog, 
+  Box, Paper, Typography, Button, Dialog, 
   DialogTitle, DialogContent, DialogActions, Pagination, Stack
 } from '@mui/material';
 import camposDescripcionGic from '../components/diccionarioColumnasGic';
 import { esValorValido, primeraMayus, titleCase, highlightText } from '../utils/textUtils';
 import { mostrarNormalizadoGic as mostrarNormalizado } from '../utils/normalised';
+import usePaginacion from '../utils/usePaginacion';
 
 
 // Función para renderizar claves y valores (como tabla)
@@ -18,22 +19,19 @@ function renderClaveValor(data, headers, terms) {
   ));
 }
 
-// -------------
-
-const PAGE_SIZE = 5;
 
 // Funcion principal
-function GicBusqueda({ resultados = [], mensaje, searchTerms=[], hasSearched=true }) {
+function GicBusqueda({ resultados = [], searchTerms=[], hasSearched=true }) {
   const [seleccionado, setSeleccionado] = useState(null);
-  const [pagina, setPagina] = useState(1);
-  const totalPages = Math.ceil((resultados || []).length / PAGE_SIZE);
-  const pageResults = (resultados || []).slice((pagina - 1) * PAGE_SIZE, pagina * PAGE_SIZE);
-
-  console.info("los resultados para el gic son: ", resultados)
-
   const handleSeleccionar = (item) => setSeleccionado(item);
   const handleCerrar = () => setSeleccionado(null);
-  const handlePageChange = (_e, value) => setPagina(value);
+  console.info("resultados gic: ", resultados)
+  const {
+    pagina,
+    totalPages,
+    pageResults,
+    handlePageChange,
+  } = usePaginacion(resultados);
 
   // campos columna derecha
   const camposHechosGic = [ "ResumenHechos", "Lugar de los hechos", "LugarHechos" ]
@@ -233,9 +231,7 @@ function GicBusqueda({ resultados = [], mensaje, searchTerms=[], hasSearched=tru
   return (
     <>
       {/* Mostrar cargando */}
-      {mensaje ? (
-        <Alert severity="info" sx={{ mb: 2 }}>{mensaje}</Alert>
-      ) : hasSearched && resultados.length === 0 ? (
+      {hasSearched && resultados.length === 0 ? (
         <Typography variant="body2" sx={{ color: '#999', mt: 2 }}>
           No existen resultados para esta búsqueda.
         </Typography>

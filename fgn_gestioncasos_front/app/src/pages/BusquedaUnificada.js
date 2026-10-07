@@ -14,18 +14,14 @@ export default function BusquedaUnificada({ query = '', resultados = {}, loading
   useEffect(() => {
     setActiveSources(selectedSources);
   }, [selectedSources]);
+  
 
   const visibleResults = useMemo(() => {
-    console.info('resultados:', resultados);
-    console.info('selectedSources', selectedSources);
-    console.info('activeSources', activeSources);
-
-    const filtered = {};
-    selectedSources.forEach((source) => {
-      const list = resultados?.[source] || [];
-      filtered[source] = activeSources.includes(source) ? list : [];
-    });
-    return filtered;
+    //console.info('resultados:', resultados);
+    return selectedSources.reduce((acc, source) => {
+      acc[source] = activeSources.includes(source) ? (resultados?.[source] || []) : [];
+      return acc;
+    }, {});
   }, [resultados, selectedSources, activeSources]);
 
   const searchTerms = useMemo(
@@ -85,8 +81,6 @@ export default function BusquedaUnificada({ query = '', resultados = {}, loading
                 key={source}
                 source={source}
                 items={visibleResults[source]}
-                selectedItem={selectedItem}
-                onSelect={setSelectedItem}
                 searchTerms={searchTerms}
               />
             ) : null
@@ -104,6 +98,7 @@ export default function BusquedaUnificada({ query = '', resultados = {}, loading
         >
           <GraphPanel selectedItem={selectedItem} items={visibleResults} />
           <DetailPanel selectedItem={selectedItem} />
+
         </Box>
       </Box>
     </Box>

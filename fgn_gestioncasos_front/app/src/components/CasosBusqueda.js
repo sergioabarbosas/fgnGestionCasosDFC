@@ -1,27 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
-  Box, Paper, Typography, Alert, Button, Dialog, DialogTitle, DialogContent, DialogActions, Pagination, Stack
+  Box, Paper, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions, Pagination, Stack
 } from '@mui/material';
 import camposDescripcion from '../components/diccionarioColumnas';
 import { esValorValido, primeraMayus, highlightText } from '../utils/textUtils';
 import { mostrarNormalizadoCasos as mostrarNormalizado, mostrarSiNo } from '../utils/normalised';
+import usePaginacion from '../utils/usePaginacion';
 
-
-
-// ---------------
-
-const PAGE_SIZE = 5; // num de pag
 
 // funcion prpal
-function CasosBusqueda({ resultados = [], mensaje, searchTerms=[], hasSearched=true }) {
-  const [casoSeleccionado, setCasoSeleccionado] = useState(null);
-  const [pagina, setPagina] = useState(1);
-  const totalPages = Math.ceil(resultados.length / PAGE_SIZE);
-  const pageResults = resultados.slice((pagina - 1) * PAGE_SIZE, pagina * PAGE_SIZE);
+function CasosBusqueda({ resultados = [], searchTerms=[], hasSearched=true }) {
   
+  const [casoSeleccionado, setCasoSeleccionado] = useState(null);
   const handleSeleccionar = (caso) => setCasoSeleccionado(caso);
   const handleCerrarDialog = () => setCasoSeleccionado(null);
-  const handlePageChange = (_event, value) => setPagina(value);
+
   const camposHechos = ["tx_hechos", "tx_hipotesis", "tx_observaciones"];
   const camposBooleanos = [
     "b_asignacion_especial",
@@ -31,9 +24,12 @@ function CasosBusqueda({ resultados = [], mensaje, searchTerms=[], hasSearched=t
     "b_priorizado"
   ];
 
-  useEffect(() => {
-    setPagina(1);
-  }, [resultados]);
+  const {
+    pagina,
+    totalPages,
+    pageResults,
+    handlePageChange,
+  } = usePaginacion(resultados);
 
   // tarjeta para detalle del caso
   const renderDetalleCaso = (caso, terms) => {
@@ -120,9 +116,7 @@ function CasosBusqueda({ resultados = [], mensaje, searchTerms=[], hasSearched=t
   return (
     <>
       {/* Mostrar cargando */}
-      {mensaje ? (
-        <Alert severity="info" sx={{ mb: 2 }}>{mensaje}</Alert>
-      ) : hasSearched && resultados.length === 0 ? (
+      {hasSearched && resultados.length === 0 ? (
         <Typography variant="body2" sx={{ color: '#999', mt: 2 }}>
           No existen resultados para esta búsqueda.
         </Typography>

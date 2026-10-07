@@ -1,28 +1,27 @@
 import React, { useState } from 'react';
 import {
-  Box, Paper, Typography, Alert, Button, Dialog, DialogTitle, DialogContent, DialogActions, Pagination, Stack
+  Box, Paper, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions, Pagination, Stack
 } from '@mui/material';
 import camposDescripcionUIAF from './diccionarioColumnasUIAF';
 import { esValorValido, primeraMayus, titleCase, highlightText } from '../utils/textUtils';
 import { mostrarNormalizadoGic as mostrarNormalizado } from '../utils/normalised';
+import usePaginacion from '../utils/usePaginacion';
 
-
-// -------------------
-
-const PAGE_SIZE = 5;
 
 // Funcion principal
-function UIAFBusqueda({ resultados, mensaje, searchTerms, loading, hasSearched }) {
+function UIAFBusqueda({ resultados, searchTerms, hasSearched }) {
+
+  //console.log("Resultados de búsqueda:", resultados);
   const [seleccionado, setSeleccionado] = useState(null);
-  const [pagina, setPagina] = useState(1);
-  const totalPages = Math.ceil((resultados || []).length / PAGE_SIZE);
-  const pageResults = (resultados || []).slice((pagina - 1) * PAGE_SIZE, pagina * PAGE_SIZE);
-
-  console.log("Resultados de búsqueda:", resultados);
-
   const handleSeleccionar = (item) => setSeleccionado(item);
   const handleCerrar = () => setSeleccionado(null);
-  const handlePageChange = (_e, value) => setPagina(value);
+
+  const {
+    pagina,
+    totalPages,
+    pageResults,
+    handlePageChange,
+  } = usePaginacion(resultados);
 
   // campos columna derecha
   const camposHechosUIAF = [ "tx_hechos", "Lugar de los hechos", "c_departamento" ]
@@ -201,9 +200,7 @@ function UIAFBusqueda({ resultados, mensaje, searchTerms, loading, hasSearched }
   return (
     <>
       {/* Mostrar cargando */}
-      {mensaje ? (
-        <Alert severity="info" sx={{ mb: 2 }}>{mensaje}</Alert>
-      ) : hasSearched && resultados.length === 0 ? (
+      {hasSearched && resultados.length === 0 ? (
         <Typography variant="body2" sx={{ color: '#999', mt: 2 }}>
           No existen resultados para esta búsqueda.
         </Typography>
