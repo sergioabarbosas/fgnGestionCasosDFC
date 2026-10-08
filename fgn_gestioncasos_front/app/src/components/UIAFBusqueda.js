@@ -6,6 +6,7 @@ import camposDescripcionUIAF from './dictionaries/diccionarioColUIAF';
 import { esValorValido, primeraMayus, titleCase, highlightText } from '../utils/textUtils';
 import { mostrarNormalizadoGic as mostrarNormalizado } from '../utils/normalised';
 import usePaginacion from '../utils/usePaginacion';
+import DetalleDialog from './DetalleDialog';
 
 
 // Funcion principal
@@ -225,30 +226,16 @@ function UIAFBusqueda({ resultados, searchTerms, hasSearched }) {
         </>
       )}
 
-      <Dialog open={!!seleccionado} onClose={handleCerrar} maxWidth="md" fullWidth>
-        {seleccionado && (
-          <>
-            <DialogTitle>
-              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', mb: 1 }}>
-                <Typography variant="h6" align='center' sx={{ color: 'text.secondary', mb: -1, p: 1}}>
-                  Detalle del Registro UIAF
-                </Typography>
-                <Typography variant="h6" sx={{ color: '#a21caf', mb: -4, p: 1 }}>
-                  {`No. Informe UIAF: `}{ highlightText(String(idEntrada), searchTerms || []) }
-                </Typography>
-              </Box>
-            </DialogTitle>
+      {/* detalle del dialog*/}
+      <DetalleDialog
+        open={!!seleccionado}
+        onClose={handleCerrar}
+        title="Detalle del Registro en UIAF"
+        subtitulo={highlightText(`No. Informe UIAF: ${idEntrada}`, searchTerms || [])}
+      >
+        {seleccionado && renderDetalle(seleccionado, searchTerms)}
+      </DetalleDialog>
 
-            <DialogContent>
-              {renderDetalle(seleccionado, searchTerms)}
-            </DialogContent>
-
-            <DialogActions>
-              <Button onClick={handleCerrar}>Cerrar</Button>
-            </DialogActions>
-          </>
-        )}
-      </Dialog>
     </>
   );
 }

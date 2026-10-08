@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import {
-  Box, Paper, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions, Pagination, Stack
+  Box, Paper, Typography, Button, Pagination, Stack
 } from '@mui/material';
 import camposDescripcion from './dictionaries/diccionarioColCasos';
 import { esValorValido, primeraMayus, highlightText } from '../utils/textUtils';
 import { mostrarNormalizadoCasos as mostrarNormalizado, mostrarSiNo } from '../utils/normalised';
 import usePaginacion from '../utils/usePaginacion';
-
+import DetalleDialog from './DetalleDialog';
 
 // funcion prpal
 function CasosBusqueda({ resultados = [], searchTerms=[], hasSearched=true }) {
@@ -118,7 +118,8 @@ function CasosBusqueda({ resultados = [], searchTerms=[], hasSearched=true }) {
       {/* Mostrar cargando */}
       {hasSearched && resultados.length === 0 ? (
         <Typography variant="body2" sx={{ color: '#999', mt: 2 }}>
-          No existen resultados para esta búsqueda.
+          No existen resultados para esta búsqueda. Recuerda que los datos 
+          consultados son únicamente los casos de la DFC.
         </Typography>
       ) : (
         <>
@@ -141,34 +142,17 @@ function CasosBusqueda({ resultados = [], searchTerms=[], hasSearched=true }) {
           </Box>
         </>
       )}
+      
+      {/* detalle del dialog*/}
+      <DetalleDialog
+        open={!!casoSeleccionado}
+        onClose={handleCerrarDialog}
+        title="Detalle del Caso en APLICA"
+        subtitulo={casoSeleccionado?.c_radicado}
+      >
+        {casoSeleccionado && renderDetalleCaso(casoSeleccionado, searchTerms)}
+      </DetalleDialog>
 
-      <Dialog open={!!casoSeleccionado} onClose={handleCerrarDialog} maxWidth="md" fullWidth>
-        {casoSeleccionado && (
-          <>
-            <DialogTitle>
-              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', mb: 1 }}>
-                
-                <Typography variant="h6" sx={{ color: 'text.secondary', mb: 1 }}>
-                  Detalle del Caso
-                </Typography>
-              
-                <Typography variant="subtitle1" sx={{ color: '#a21caf', fontWeight: 'bold' }}>
-                  {casoSeleccionado.c_radicado}
-                </Typography>
-                
-              </Box>
-            </DialogTitle>
-
-            <DialogContent>
-              {renderDetalleCaso(casoSeleccionado, searchTerms)}
-            </DialogContent>
-
-            <DialogActions>
-              <Button onClick={handleCerrarDialog}>Cerrar</Button>
-            </DialogActions>
-          </>
-        )}
-      </Dialog>
     </>
   );
 }

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import {
-  Box, Paper, Typography, Button, Dialog, 
-  DialogTitle, DialogContent, DialogActions, Pagination, Stack
+  Box, Paper, Typography, Button, Pagination, Stack
 } from '@mui/material';
 import camposDescripcionGic from './dictionaries/diccionarioColGic';
 import { esValorValido, primeraMayus, titleCase, highlightText } from '../utils/textUtils';
 import { mostrarNormalizadoGic as mostrarNormalizado } from '../utils/normalised';
 import usePaginacion from '../utils/usePaginacion';
+import DetalleDialog from './DetalleDialog';
 
 
 // Función para renderizar claves y valores (como tabla)
@@ -256,30 +256,16 @@ function GicBusqueda({ resultados = [], searchTerms=[], hasSearched=true }) {
         </>
       )}
 
-      <Dialog open={!!seleccionado} onClose={handleCerrar} maxWidth="md" fullWidth>
-        {seleccionado && (
-          <>
-            <DialogTitle>
-              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', mb: 1 }}>
-                <Typography variant="h6" align='center' sx={{ color: 'text.secondary', mb: -1, p: 1}}>
-                  Detalle del Registro GIC
-                </Typography>
-                <Typography variant="h6" sx={{ color: '#a21caf', mb: -4, p: 1 }}>
-                  {`Id Entrada: `}{ highlightText(String(idEntrada), searchTerms || []) }
-                </Typography>
-              </Box>
-            </DialogTitle>
+      {/* detalle del dialog*/}
+      <DetalleDialog
+        open={!!seleccionado}
+        onClose={handleCerrar}
+        title="Detalle del Registro en GIC"
+        subtitulo={highlightText(`Id Entrada: ${idEntrada}`, searchTerms || [])}
+      >
+        {seleccionado && renderDetalle(seleccionado, searchTerms)}
+      </DetalleDialog>
 
-            <DialogContent>
-              {renderDetalle(seleccionado, searchTerms)}
-            </DialogContent>
-
-            <DialogActions>
-              <Button onClick={handleCerrar}>Cerrar</Button>
-            </DialogActions>
-          </>
-        )}
-      </Dialog>
     </>
   );
 }
