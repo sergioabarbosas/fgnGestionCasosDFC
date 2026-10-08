@@ -2,19 +2,23 @@ import React, { useState } from 'react';
 import {
   Box, Paper, Typography, Button, Pagination, Stack
 } from '@mui/material';
-import camposDescripcionGic from './dictionaries/diccionarioColGic';
 import { esValorValido, primeraMayus, titleCase, highlightText } from '../utils/textUtils';
 import { mostrarNormalizadoGic as mostrarNormalizado } from '../utils/normalised';
 import usePaginacion from '../utils/usePaginacion';
 import DetalleDialog from './DetalleDialog';
+import camposDescripcionGic, {
+  GIC_PERSONA,
+  GIC_PERSONA_CARD_KEYS,
+  GIC_TRAMITE,
+} from './dictionaries/diccionarioColGic';
 
 
-// Función para renderizar claves y valores (como tabla)
-function renderClaveValor(data, headers, terms) {
-  return headers.map(header => (
-    <Typography variant="body2" sx={{ fontSize: 13 }} key={header.key}>
-      <strong>{header.label}:</strong>{" "}
-      {highlightText(mostrarNormalizado(data[header.key]) || "Sin información", terms)}
+// renderizar claves y valores como tabla
+function renderClaveValor(data, dict, keys, terms) {
+  return keys.map((key) => (
+    <Typography variant="body2" sx={{ fontSize: 12 }} key={key}>
+      <strong>{dict[key] || key}:</strong>{" "}
+      {highlightText(mostrarNormalizado(data[key]) || "Sin información", terms)}
     </Typography>
   ));
 }
@@ -53,7 +57,7 @@ function GicBusqueda({ resultados = [], searchTerms=[], hasSearched=true }) {
         {/* Izquierda: metadatos */}
         <Box sx={{ flex: 1 }}>
           {keysIzquierda.map(key => (
-            <Typography key={key} variant="body2" sx={{ mb: 0.3 }}>
+            <Typography key={key} variant="body2" sx={{ fontSize: 12, mb: 0.3 }}>
               <strong>{camposDescripcionGic[key] || key}:</strong>{" "}
               {camposBooleanos.includes(key)
                 ? highlightText(primeraMayus(String(main[key])), terms)
@@ -63,8 +67,8 @@ function GicBusqueda({ resultados = [], searchTerms=[], hasSearched=true }) {
 
           {/* Lista de fulanos */}
           {item.personasList && (
-            <Typography variant="body2" sx={{ mt: 0.7 }}>
-              <strong>Listado de Personas:</strong> {highlightText(titleCase(item.personasList), terms)}
+            <Typography variant="body2" sx={{ fontSize: 12, mt: 0.7 }}>
+              <strong>Lista de Personas:</strong> {highlightText(titleCase(item.personasList), terms)}
             </Typography>
           )}
 
@@ -78,14 +82,9 @@ function GicBusqueda({ resultados = [], searchTerms=[], hasSearched=true }) {
               <Stack spacing={2} sx={{ maxWidth: 400, margin: '1 auto', }}>
                 {item.personas.map((p, i) => (
                   <Paper sx={{ p: 1, border: '1px solid #ddd', borderRadius: 2 }}>
-                  <Box key={p.Title || p.Identificacion || i} sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-                    {renderClaveValor(p, [
-                      { key: "NombreCompleto", label: "Nombre completo" },
-                      { key: "Identificacion", label: "Identificación" },
-                      { key: "TipoIdentificacion", label: "Tipo de Identificación" },
-                      { key: "RelacionPersona", label: "Rol de la persona" },
-                    ], terms)}
-                  </Box>
+                    <Box key={p.Title || p.Identificacion || i} sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                      {renderClaveValor(p, GIC_PERSONA, GIC_PERSONA_CARD_KEYS, terms)}
+                    </Box>
                   </Paper>
                 ))}
               </Stack>
@@ -101,7 +100,7 @@ function GicBusqueda({ resultados = [], searchTerms=[], hasSearched=true }) {
                 <Typography variant="h6" sx={{ color: '#a21caf', mb: 1 }}>
                   {camposDescripcionGic[key] || key}:
                 </Typography>
-                <Typography variant="body2" sx={{ whiteSpace: 'pre-line' }}>
+                <Typography variant="body2" sx={{ fontSize: 12, whiteSpace: 'pre-line' }}>
                   {highlightText(primeraMayus(mostrarNormalizado(main[key])), terms)}
                 </Typography>
               </Box>
@@ -131,41 +130,7 @@ function GicBusqueda({ resultados = [], searchTerms=[], hasSearched=true }) {
 
                   {/* Detalle tramite */}
                   <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, rowGap: 1.5, columnGap: 2 }}>
-                    {renderClaveValor(t, [
-                      { key: "Created", label: "Fecha de Creación" },
-                      { key: "Created By", label: "Creado por" },
-                      { key: "Decisión FiscalUGIC", label: "Decisión del Fiscal" },
-                      { key: "DescripciónResultado", label: "Descrip. resultado" },
-                      { key: "DestinoDireccion", label: "Dirección de destino" },
-                      { key: "DestinoSeccional", label: "Seccional de destino" },
-                      { key: "EsActivo", label: "Estado" },
-                      { key: "FechaAsignacionUGIC", label: "Fecha asignación UGIC" },
-                      { key: "FechaEntregaDEIF", label: "Fecha entrega DEIF" },
-                      { key: "FechaMesaTrabajo", label: "Fecha mesa de trabajo" },
-                      { key: "FechaRegistroTramite", label: "Fecha de registro trámite" },
-                      { key: "FechaUsuarioModificaTramite", label: "Fecha de modificación de registro" },
-                      { key: "FiscalResponsableUGIC", label: "Fiscal responsable UGIC" },
-                      { key: "GenNumIntervTemp", label: "GenNumIntervTemp" },
-                      { key: "GenNumIntervTempDEIF", label: "GenNumIntervTempDEIF"},
-                      { key: "NivelRelevancia", label: "Nivel de relevancia"},
-                      { key: "Modified By", label: "Modificado por"},
-                      { key: "NoCasosAsociados", label: "No. casos asociados"},
-                      { key: "NoCasosIdentAsoc", label: "NoCasosIdentAsoc"},
-                      { key: "NumAsignacion", label: "No. asignación"},
-                      { key: "NumIniciativaDEIF", label: "No. iniciativa DEIF"},
-                      { key: "NumIntervTemp", label: "NumIntervTemp"},
-                      { key: "PolJudAsignada", label: "Policía Judicial asignada"},
-                      { key: "RealizaMesaTrabajo", label: "Realiza mesa de trabajo"},
-                      { key: "Resultado", label: "Resultado"},
-                      { key: "ResultadoInforme", label: "Resultado informe"},
-                      { key: "SistemaDestino", label: "Sist. destino"},
-                      { key: "SustentoNivelPrioridad", label: "Sustento nivel prioridad"},
-                      { key: "TipoGestion", label: "Tipo de gestión"},
-                      { key: "TipoMesaTrabajo", label: "Tipo de mesa de trabajo"},
-                      { key: "Title", label: "Title"},
-                      { key: "UsuarioCreadorTramite", label: "Usuario que creó el trámite"},
-                      { key: "UuarioModificaTramite", label: "Usuario que modifica el trámite"},
-                    ], terms)}
+                    {renderClaveValor(t, GIC_TRAMITE, Object.keys(GIC_TRAMITE), terms)}
                   </Box>
                 </Box>
               </Paper>
@@ -192,23 +157,23 @@ function GicBusqueda({ resultados = [], searchTerms=[], hasSearched=true }) {
       <Paper elevation={6} sx={{ p: 2, mb: 2 }} key={idx}>
         <Stack spacing={0.8}>
           <Box sx={{ display: 'flex', flexwrap: 'wrap', gap: 2, alignItems: 'center' }}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: '#137cbd' }}>IdEntrada:</Typography>
-            <Button variant="outlined" color="primary" size="small" onClick={() => handleSeleccionar(item)} sx={{ fontWeight: 'bold', fontSize: '0.85rem', minWidth: 150 }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: '#137cbd', fontSize:12 }}>IdEntrada:</Typography>
+            <Button variant="outlined" color="primary" size="small" onClick={() => handleSeleccionar(item)} sx={{ fontWeight: 'bold', fontSize: '0.75rem', minWidth: 150 }}>
               {titulo}
             </Button>
 
-            <Typography variant="body2" sx={{ mx: 1 }}>
+            <Typography variant="body2" sx={{ mx: 1, fontSize:12 }}>
               | Estado: <span style={{ fontWeight: 'bold', color: '#0a237e' }}>{primeraMayus(estado)}</span>
             </Typography>
 
-            <Typography variant="body2" sx={{ mx: 1 }}>
+            <Typography variant="body2" sx={{ mx: 1, fontSize:12 }}>
               {lugar ? <>| Lugar de los Hechos: <span style={{ color: '#10b981', fontWeight: 'bold', fontSize: '0.85rem' }}>{highlightText(String(titleCase(lugar)), searchTerms)}</span></> : null}
             </Typography>
           </Box>
 
           <Box sx={{ mt: 1 }}>
-          <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#a21caf' }}>Hechos:</Typography>
-            <Typography variant="body2" sx={{ mt: 0.5 }}>
+          <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#a21caf',fontSize:12 }}>Hechos:</Typography>
+            <Typography variant="body2" sx={{ mt: 0.5, fontSize:12 }}>
               {hechosPreview
                 ? highlightText(hechosPreview.length > 550 ? hechosPreview.slice(0, 440) + "..." : hechosPreview, searchTerms)
                 : <span style={{ color: '#888' }}>Sin información de hechos</span>}
@@ -218,7 +183,7 @@ function GicBusqueda({ resultados = [], searchTerms=[], hasSearched=true }) {
           {/* resumen personas (si existe) */}
           {item.personasList && (
             <Box sx={{ mt: 1 }}>
-              <Typography variant="body2">
+              <Typography variant="body2" sx={{fontSize:12}} >
                 <strong>Personas:</strong> {highlightText(titleCase(item.personasList), searchTerms)}
               </Typography>
             </Box>

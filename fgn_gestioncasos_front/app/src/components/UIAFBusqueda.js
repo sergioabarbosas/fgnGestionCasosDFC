@@ -45,7 +45,7 @@ function UIAFBusqueda({ resultados, searchTerms, hasSearched }) {
         {/* Izquierda: metadatos */}
         <Box sx={{ flex: 1 }}>
           {keysIzquierda.map(key => (
-            <Typography key={key} variant="body2" sx={{ mb: 0.3 }}>
+            <Typography key={key} variant="body2" sx={{ fontSize: 12, mb: 0.3 }}>
               <strong>{camposDescripcionUIAF[key] || key}:</strong>{" "}
               {highlightText(primeraMayus(mostrarNormalizado(main[key])), terms)}
             </Typography>
@@ -53,7 +53,7 @@ function UIAFBusqueda({ resultados, searchTerms, hasSearched }) {
 
           {/* Lista de fulanos */}
           {item.personasList && (
-            <Typography variant="body2" sx={{ mt: 0.7 }}>
+            <Typography variant="body2" sx={{ mt: 0.7, fontSize: 12 }}>
               <strong>Listado de Personas:</strong> {highlightText(titleCase(item.personasList), terms)}
             </Typography>
           )}
@@ -72,7 +72,7 @@ function UIAFBusqueda({ resultados, searchTerms, hasSearched }) {
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                       
                       {/* Encabezado de la persona */}
-                      <Typography variant="body2" sx={{ fontWeight: 'bold', fontSize: 13.5, color: '#137cbd' }}>
+                      <Typography variant="body2" sx={{ fontWeight: 'bold', fontSize: 12, color: '#137cbd' }}>
                         {highlightText(p.nombre_completo || "Sin Nombre", terms)}
                         {" - "}
                         <span style={{ color: '#ff5733', fontWeight: 'bold' }}>
@@ -102,7 +102,7 @@ function UIAFBusqueda({ resultados, searchTerms, hasSearched }) {
                           <Typography 
                             variant="body2" 
                             sx={{ 
-                              fontSize: 13,
+                              fontSize: 12,
                               wordWrap: "break-word",
                               overflow: "hidden",
                               whiteSpace: "pre-wrap"
@@ -129,7 +129,7 @@ function UIAFBusqueda({ resultados, searchTerms, hasSearched }) {
                 <Typography variant="h6" sx={{ color: '#a21caf', mb: 1 }}>
                   {camposDescripcionUIAF[key] || key}:
                 </Typography>
-                <Typography variant="body2" sx={{ whiteSpace: 'pre-line' }}>
+                <Typography variant="body2" sx={{ whiteSpace: 'pre-line', fontSize: 12 }}>
                   {highlightText(primeraMayus(mostrarNormalizado(main[key])), terms)}
                 </Typography>
               </Box>

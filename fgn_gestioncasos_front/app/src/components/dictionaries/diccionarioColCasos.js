@@ -5,6 +5,7 @@ const camposDescripcion = {
     c_estado: "Estado del caso",
     c_despacho: "Despacho",
     c_despacho_articulacion: "Despacho de Articulación",
+    c_dependencia_articulacion: "Dependencia de Articulación",
     c_direccion_caso: "Dirección del caso",
     c_razon_social: "Razón social",
     c_delito: "Delito asociado",
