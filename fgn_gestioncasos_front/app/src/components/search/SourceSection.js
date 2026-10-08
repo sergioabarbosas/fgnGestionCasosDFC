@@ -1,10 +1,11 @@
 import React from 'react';
-import { Box, Typography, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
+import { Badge, Box, Typography, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CasosBusqueda from "../CasosBusqueda";
 import GicBusqueda from "../GICBusqueda";
 import UIAFBusqueda from "../UIAFBusqueda";
 import { SOURCE_COLORS } from '../../utils/sourceColors';
+import { getBadgeColor, getCount  } from './BadgeColor';
 
 
 const SOURCE_COMPONENTS = {
@@ -19,6 +20,7 @@ export default function SourceSection({ source, items = [],  searchTerms=[] }) {
 
   const SectionComponent = SOURCE_COMPONENTS[source];
   const sourceColor = SOURCE_COLORS[source] || '#cbd5e1';
+  const count = getCount(items); // para el badge
 
   return (
     
@@ -43,12 +45,21 @@ export default function SourceSection({ source, items = [],  searchTerms=[] }) {
             sx={{
               width: 11,
               height: 11,
+              fontSize:12,
               borderRadius: '50%',
               bgcolor: sourceColor,
             }}
           />
-          <Typography variant="body2" sx={{ fontWeight:520, color:"#6b7280" }}>
-            {source.toUpperCase()} ({items.length})
+          <Typography variant="body2" sx={{ fontWeight:550, fontSize:12, color:"#6b7280" }}>
+            {/* {source.toUpperCase()} ({items.length}) */}
+            {source.toUpperCase()}{' '}
+            <Badge
+              badgeContent={count}
+              color={getBadgeColor(count)}
+              max={999}
+              showZero
+              sx={{ ml: 2.5 }}
+            />
           </Typography>
         </Box>
       </AccordionSummary>

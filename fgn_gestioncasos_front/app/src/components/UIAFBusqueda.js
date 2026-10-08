@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  Box, Paper, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions, Pagination, Stack
+  Box, Paper, Typography, Button, Pagination, Stack
 } from '@mui/material';
 import camposDescripcionUIAF from './dictionaries/diccionarioColUIAF';
 import { esValorValido, primeraMayus, titleCase, highlightText } from '../utils/textUtils';
@@ -157,28 +157,28 @@ function UIAFBusqueda({ resultados, searchTerms, hasSearched }) {
       <Paper elevation={6} sx={{ p: 2, mb: 2 }} key={idx}>
         <Stack spacing={0.8}>
           <Box sx={{ display: 'flex', flexwrap: 'wrap', gap: 2, alignItems: 'center' }}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: '#137cbd' }}>No. Informe UIAF:</Typography>
-            <Button variant="outlined" color="primary" size="small" onClick={() => handleSeleccionar(item)} sx={{ fontWeight: 'bold', fontSize: '0.85rem', minWidth: 150 }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: '#137cbd', fontSize:12 }}>No. Informe UIAF:</Typography>
+            <Button variant="outlined" color="primary" size="small" onClick={() => handleSeleccionar(item)} sx={{ fontWeight: 'bold', fontSize: '0.75rem', minWidth: 150 }}>
               {titulo}
             </Button>
 
-            <Typography variant="body2" sx={{ mx: 1 }}>
+            <Typography variant="body2" sx={{ mx: 1, fontSize:12 }}>
               | Radicado: <span style={{ fontWeight: 'bold', color: '#0a237e' }}>{radicado}</span>
             </Typography>
 
-            <Typography variant="body2" sx={{ mx: 1 }}>
+            <Typography variant="body2" sx={{ mx: 1, fontSize:12 }}>
               {direccion ? <>| Dirección a cargo: <span style={{ color: '#10b981', fontWeight: 'bold', fontSize: '0.85rem' }}>{highlightText(String(direccion), searchTerms)}</span></> : null}
             </Typography>
 
-            <Typography variant="body2" sx={{ mx: 1 }}>
+            <Typography variant="body2" sx={{ mx: 1, fontSize:12 }}>
               {fecha ? <>| Fecha del Informe: <span style={{ color: '#b910abff', fontWeight: 'bold', fontSize: '0.85rem' }}>{highlightText(String(fecha), searchTerms)}</span></> : null}
             </Typography>
 
           </Box>
 
           <Box sx={{ mt: 1 }}>
-          <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#a21caf' }}>Hechos:</Typography>
-            <Typography variant="body2" sx={{ mt: 0.5 }}>
+          <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#a21caf', fontSize:12 }}>Hechos:</Typography>
+            <Typography variant="body2" sx={{ mt: 0.5, fontSize:12 }}>
               {hechosPreview
                 ? highlightText(hechosPreview.length > 550 ? hechosPreview.slice(0, 440) + "..." : hechosPreview, searchTerms)
                 : <span style={{ color: '#888' }}>Sin información de hechos</span>}
@@ -188,7 +188,7 @@ function UIAFBusqueda({ resultados, searchTerms, hasSearched }) {
           {/* resumen personas (si existe) */}
           {item.personasList && (
             <Box sx={{ mt: 1 }}>
-              <Typography variant="body2">
+              <Typography variant="body2" sx={{fontSize:12}}>
                 <strong>Personas:</strong> {highlightText(titleCase(item.personasList), searchTerms)}
               </Typography>
             </Box>
