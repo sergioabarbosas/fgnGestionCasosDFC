@@ -1,5 +1,5 @@
-const pick = (dict, keys) =>
-  Object.fromEntries(keys.map((k) => [k, dict[k]]));
+// const pick = (dict, keys) =>
+//   Object.fromEntries(keys.map((k) => [k, dict[k]]));
 
 // variantes "LugarHecho:X" y "LugarHecho_X" sin repetirlas a mano
 const LUGAR_HECHO = {
