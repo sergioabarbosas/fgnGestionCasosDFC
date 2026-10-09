@@ -8,13 +8,13 @@ export default function GraphPanel({ selectedItem, items }) {
         bgcolor: '#fff',
         border: '1px solid #dbe3e8',
         borderRadius: 2,
-        p: 2,
+        p: 1.5,
         minHeight: 0,
         overflow: 'hidden',
       }}
     >
-      <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 1 }}>
-        Grafo
+      <Typography variant="body2" sx={{ fontWeight:550, mb:1, fontSize:12, color:"#6b7280" }}>
+        Grafo de Correlaciones
       </Typography>
 
       <Box
@@ -26,9 +26,10 @@ export default function GraphPanel({ selectedItem, items }) {
           alignItems: 'center',
           justifyContent: 'center',
           color: '#94a3b8',
+          fontSize:12
         }}
       >
-        ----------- grafo que no tengo aún -----------
+        ----------- ? -----------
       </Box>
     </Box>
   );

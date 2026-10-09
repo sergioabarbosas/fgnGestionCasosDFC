@@ -8,18 +8,18 @@ export default function DetailPanel({ selectedItem }) {
         bgcolor: '#fff',
         border: '1px solid #dbe3e8',
         borderRadius: 2,
-        p: 2,
+        p: 1.5,
         minHeight: 0,
         overflowY: 'auto',
       }}
     >
-      <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 1 }}>
+      <Typography variant="body2" sx={{ fontWeight:550, mb:1, fontSize:12, color:"#6b7280" }}>
         Detalle
       </Typography>
 
       {!selectedItem ? (
-        <Typography variant="body2" sx={{ color: '#94a3b8' }}>
-          info del nodo.
+        <Typography variant="body2" sx={{ fontSize:12, color: '#94a3b8' }}>
+          info... del nodo...
         </Typography>
       ) : (
         <>
