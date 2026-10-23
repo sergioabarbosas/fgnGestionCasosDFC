@@ -4,6 +4,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CasosBusqueda from "../CasosBusqueda";
 import GicBusqueda from "../GICBusqueda";
 import UIAFBusqueda from "../UIAFBusqueda";
+import BienesBusqueda from "../BienesBusqueda";
 import { SOURCE_COLORS } from '../../utils/sourceColors';
 import { getBadgeColor, getCount  } from './BadgeColor';
 
@@ -12,7 +13,7 @@ const SOURCE_COMPONENTS = {
   casos: CasosBusqueda,
   gic: GicBusqueda,
   uiaf: UIAFBusqueda,
-  // muif: MuifBusqueda,
+  bienes: BienesBusqueda
 };
 
 

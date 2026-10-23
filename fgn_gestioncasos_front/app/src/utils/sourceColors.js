@@ -15,4 +15,5 @@ export const SOURCE_COLORS = {
   casos: '#E4572E',
   uiaf: '#29335C', 
   gic: '#c50c87', //'#FF9F1C'//'#F3A712',
+  bienes: '#ff9c10'
 };

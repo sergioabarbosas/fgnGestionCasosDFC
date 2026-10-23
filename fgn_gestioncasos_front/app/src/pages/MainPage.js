@@ -9,7 +9,7 @@ import Header from '../components/header';
 import BusquedaUnificada from './BusquedaUnificada'
 import { SOURCE_COLORS } from '../utils/sourceColors';
 
-const ALL_SOURCES = ['casos', 'uiaf', 'gic'];
+const ALL_SOURCES = ['casos', 'uiaf', 'gic', 'bienes'];
 
 
 export default function MainPage() {
