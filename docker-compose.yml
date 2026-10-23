@@ -1,0 +1,161 @@
+# version: '3.9'
+
+services:
+  frontend:
+    build:
+      context: ./fgn_gestioncasos_front
+      dockerfile: Dockerfile
+    container_name: DataHub-frontend
+    ports:
+      - "3050:3050"
+    environment:
+      - REACT_APP_API_URL=http://localhost:8050
+      - PORT=3050
+    depends_on:
+      - web
+    networks:
+      - DataHub-network
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:8.4
+    container_name: DataHub_mysql
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_SCHEMA: ${MYSQL_SCHEMA}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_PORT: ${MYSQL_PORT}
+
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - DataHub-network
+    restart: unless-stopped
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:24.8
+    container_name: DataHub_clickhouse
+    environment:
+      CLICKHOUSE_DB: ${CLICKHOUSE_DB}
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD}
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: "1"
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+      - clickhouse_logs:/var/log/clickhouse-server
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8123/ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - DataHub-network
+    restart: unless-stopped
+
+  redis:
+    image: redis:7.2-alpine
+    container_name: DataHub_redis
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+    networks:
+      - DataHub-network
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ./fgn_gestioncasos_back
+      dockerfile: Dockerfile
+    container_name: DataHub_web
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8050"
+    env_file:
+      - ./fgn_gestioncasos_back/.env
+    volumes:
+      - ./fgn_gestioncasos_back:/app
+    ports:
+      - "8050:8050"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      clickhouse:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - DataHub-network
+    restart: unless-stopped
+
+  worker:
+    build:
+      context: ./fgn_gestioncasos_back
+      dockerfile: Dockerfile
+    container_name: DataHub_worker
+    command: celery -A core worker -l info
+    env_file:
+      - ./fgn_gestioncasos_back/.env
+    volumes:
+      - ./fgn_gestioncasos_back:/app
+    depends_on:
+      mysql:
+        condition: service_healthy
+      clickhouse:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - DataHub-network
+    restart: unless-stopped
+
+  beat:
+    build:
+      context: ./fgn_gestioncasos_back
+      dockerfile: Dockerfile
+    container_name: DataHub_beat
+    command: celery -A core beat -l info
+    env_file:
+      - ./fgn_gestioncasos_back/.env
+    volumes:
+      - ./fgn_gestioncasos_back:/app
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - DataHub-network
+    restart: unless-stopped
+
+networks:
+  DataHub-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+  clickhouse_data:
+  clickhouse_logs:
+  redis_data:
