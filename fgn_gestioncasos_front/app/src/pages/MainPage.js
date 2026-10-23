@@ -8,11 +8,14 @@ import CheckIcon from '@mui/icons-material/Check';
 import Header from '../components/header';
 import BusquedaUnificada from './BusquedaUnificada'
 import { SOURCE_COLORS } from '../utils/sourceColors';
+import AccountMenu from '../components/AccountMenu';
+import { getCookie, ensureCsrf } from '../api/auth';
+
 
 const ALL_SOURCES = ['casos', 'uiaf', 'gic', 'bienes'];
 
 
-export default function MainPage() {
+export default function MainPage({ user, onLogout }) {
 
   const [form, setForm] = useState({ radicado: '' });
   const [loading, setLoading] = useState(false);
@@ -32,14 +35,23 @@ export default function MainPage() {
   };
 
   const doFetch = async (payload) => {
-    const res = await fetch('http://10.105.15.143:5000/api/busqueda', {    // provisional
+  await ensureCsrf();
+
+  const res = await fetch('http://localhost:8050/api/busqueda/', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken') || '',
+      },
       body: JSON.stringify(payload),
     });
-    
-    if (!res.ok) throw new Error(`Error ${res.status} al consultar el servidor`);
-    return res.json();
+
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data.error || `Error ${res.status} al consultar el servidor`);
+    }
+    return data;
   };
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
@@ -55,7 +67,7 @@ export default function MainPage() {
 
     setLoading(true);
     setHasSearched(true);
-    setError(true);
+    setError(null);
 
     try {
       const data = await doFetch({ 
@@ -133,7 +145,12 @@ export default function MainPage() {
         }}
       >
         {/* header */}
+        {/* <Header/> */}
+        
         <Header/>
+        <Box sx={{ position: 'absolute', top: 12, right: 16, zIndex: 10 }}>
+          <AccountMenu user={user} onLogout={onLogout} />
+        </Box>
         
         {/* input search sources */}
         <Box
