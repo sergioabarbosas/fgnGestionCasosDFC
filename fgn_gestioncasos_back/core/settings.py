@@ -13,8 +13,9 @@ environ.Env.read_env(BASE_DIR / ".env")
 SECRET_KEY = env("SECRET_KEY")
 DEBUG = env("DEBUG")
 # SECURITY WARNING: don't run with debug turned on in production!
-
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
+AUTH_USER_MODEL = "usuarios.User"
 
 # Application definition
 INSTALLED_APPS = [
@@ -27,7 +28,9 @@ INSTALLED_APPS = [
     # third party
     "corsheaders",
     "rest_framework",
-    "usuarios"
+    'usuarios.apps.UsuariosConfig',
+    # busqueda endpoint
+    'busqueda.apps.BusquedaConfig',
 ]
 
 MIDDLEWARE = [
@@ -122,9 +125,12 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=[])
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["10.105.15.143", "localhost", "127.0.0.1"])
+
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [

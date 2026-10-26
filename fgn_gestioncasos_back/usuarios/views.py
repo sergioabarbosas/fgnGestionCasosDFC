@@ -9,7 +9,18 @@ from rest_framework.views import APIView
 
 
 def user_data(user):
-    return {"id": user.id, "username": user.username, "email": user.email}
+    return {
+        "id": user.id, 
+        "username": user.username, 
+        "email": user.email,
+        "force_password_change": user.force_password_change,
+        "is_superuser": user.is_superuser,
+        "roles": list(user.groups.values_list("name", flat=True)),
+        "fuentes": [
+            f for f in ("uiaf", "gic", "casos", "bienes")
+            if user.has_perm(f"usuarios.ver_{f}")
+        ],
+    }
 
 
 class CsrfView(APIView):
@@ -61,7 +72,7 @@ class LoginView(APIView):
 
 
 class LogoutView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
     def post(self, request):
         logout(request)
@@ -69,9 +80,11 @@ class LogoutView(APIView):
 
 
 class MeView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
     def get(self, request):
+        if not request.user.is_authenticated:
+            return Response({"detail": "No autenticado"}, status=401)
         return Response(user_data(request.user))
 
 
@@ -90,6 +103,7 @@ class ChangePasswordView(APIView):
             return Response({"error": list(e.messages)}, status=400)
 
         request.user.set_password(new)
-        request.user.save()
-        update_session_auth_hash(request, request.user)  # mantiene la sesión activa
+        request.user.force_password_change = False
+        request.user.save(update_fields=["password", "force_password_change"])
+        update_session_auth_hash(request, request.user)
         return Response({"ok": True})
