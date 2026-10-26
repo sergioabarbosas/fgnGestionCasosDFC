@@ -3,6 +3,7 @@ import { Box, CircularProgress } from '@mui/material';
 import MainPage from './pages/MainPage';
 import AuthPage from './pages/AuthPage';
 import { me } from './api/auth';
+import ChangePasswordPage from './pages/ChangePasswordPage';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -25,6 +26,10 @@ function App() {
 
   if (!user) return <AuthPage onAuth={setUser} />;
 
+  if (user.force_password_change) {
+    return <ChangePasswordPage user={user} onDone={setUser} />;
+  }
+  
   return <MainPage user={user} onLogout={() => setUser(null)} />;
 }
 

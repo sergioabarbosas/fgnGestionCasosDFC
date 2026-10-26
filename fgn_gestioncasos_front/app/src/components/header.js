@@ -3,9 +3,20 @@ import Button from '@mui/material/Button';
 import logo from "../assets/logo_mod.png";
 import mainPageStyles from '../styles/mainPageStyles';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import { logout } from '../api/auth';
 
 
-export default function Header() {
+export default function Header({ onLogout }) {
+  
+  const handleSalir = async () => {
+    //console.log('onLogout =', onLogout);
+    onLogout?.();            // vuelve al login de inmediato
+    try {
+      await logout();
+    } catch (e) {
+      console.error('Error en logout', e);
+    }
+  };
   
   return (
       <Container maxWidth="xl">
@@ -30,6 +41,7 @@ export default function Header() {
             type="button"
             variant="contained"
             endIcon={<ExitToAppIcon />}
+            onClick={handleSalir}
             sx={ mainPageStyles.logoutButton }
           >
             Salir

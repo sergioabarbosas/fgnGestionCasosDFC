@@ -14,7 +14,6 @@ import { getCookie, ensureCsrf } from '../api/auth';
 
 const ALL_SOURCES = ['casos', 'uiaf', 'gic', 'bienes'];
 
-
 export default function MainPage({ user, onLogout }) {
 
   const [form, setForm] = useState({ radicado: '' });
@@ -25,6 +24,9 @@ export default function MainPage({ user, onLogout }) {
 
   //const navigate = useNavigate();
   const [selectedSources, setSelectedSources] = useState([]);
+
+  // filtra las sources por el rol GIC
+  const allowedSources = ALL_SOURCES.filter((s) => user?.fuentes?.includes(s));
 
   const toggleSource = (source) => {
     setSelectedSources((prev) =>
@@ -37,7 +39,7 @@ export default function MainPage({ user, onLogout }) {
   const doFetch = async (payload) => {
   await ensureCsrf();
 
-  const res = await fetch('http://localhost:8050/api/busqueda/', {
+  const res = await fetch('/api/busqueda/', {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -60,7 +62,9 @@ export default function MainPage({ user, onLogout }) {
     e.preventDefault();
     const query = form.radicado.trim();
     if (!query) return;
-    if (selectedSources.length === 0) {
+
+    const fuentes = selectedSources.filter((s) => allowedSources.includes(s));
+    if (fuentes.length === 0) {
       setError('Seleccione al menos una fuente');
       return;
     }
@@ -71,7 +75,7 @@ export default function MainPage({ user, onLogout }) {
 
     try {
       const data = await doFetch({ 
-        libre: query, 
+        libre: query,   // busqueda en hecho libre en back version 00
         fuentes: selectedSources // selectedSources.map((s) => (s === 'aplica' ? 'casos' : s)) // ***** priovisonal
       }); // selectedSources
 
@@ -147,7 +151,7 @@ export default function MainPage({ user, onLogout }) {
         {/* header */}
         {/* <Header/> */}
         
-        <Header/>
+        <Header onLogout={onLogout}/>
         <Box sx={{ position: 'absolute', top: 12, right: 16, zIndex: 10 }}>
           <AccountMenu user={user} onLogout={onLogout} />
         </Box>
@@ -177,7 +181,8 @@ export default function MainPage({ user, onLogout }) {
             </Typography> */}
 
             <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', justifyContent: 'center' }}>
-              {ALL_SOURCES.map((source) => {
+
+              {allowedSources.map((source) => {
                 const active = selectedSources.includes(source);
                 const color = SOURCE_COLORS[source];
                 return (
@@ -227,7 +232,8 @@ export default function MainPage({ user, onLogout }) {
             helperText={error}
             sx={ mainPageStyles.inputTextmain }
             autoComplete='off'
-            InputProps={{
+            slotProps={{
+             input:{
               startAdornment: (
                 <InputAdornment position="start" sx={{ pl: 1.5 }}>
                   <SearchIcon sx={{ color: '#003f52' }} />
@@ -243,6 +249,7 @@ export default function MainPage({ user, onLogout }) {
                   </Tooltip>
                 </InputAdornment>
               ),
+            },
             }}
           />
 

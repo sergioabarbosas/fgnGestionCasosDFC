@@ -1,53 +1,57 @@
-import { useState } from 'react';
-import { Alert, Box, Button, Paper, Stack, TextField, Typography } from '@mui/material';
-import { login, register } from '../api/auth';
+import React, { useState } from 'react';
+import { Box, Button, TextField, Typography, Paper, Avatar, Alert } from '@mui/material';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import loginPageStyles from '../styles/loginPageStyles';
+import { login } from '../api/auth';
 
 export default function AuthPage({ onAuth }) {
-  const [isRegister, setIsRegister] = useState(false);
-  const [form, setForm] = useState({ username: '', email: '', password: '' });
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
-
-  const submit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!username || !password) {
+      setError('Los campos de usuario y contraseña son obligatorios.');
+      return;
+    }
     setError('');
     setLoading(true);
     try {
-      const user = isRegister
-        ? await register(form)
-        : await login({ username: form.username, password: form.password });
+      const user = await login({ username, password });
       onAuth(user);
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Error al intentar iniciar sesión. Intenta nuevamente.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Box sx={{ minHeight: '100vh', display: 'grid', placeItems: 'center', p: 2 }}>
-      <Paper sx={{ p: 3, width: '100%', maxWidth: 420 }}>
-        <Typography variant="h5" mb={2}>
-          {isRegister ? 'Crear cuenta' : 'Iniciar sesión'}
-        </Typography>
-
+    <Box sx={loginPageStyles.root}>
+      <Paper elevation={6} sx={loginPageStyles.paper}>
+        <Box sx={loginPageStyles.logoBox}>
+          <Avatar src="/logoAvatar.jpg" sx={loginPageStyles.avatar}>
+            <LockOutlinedIcon fontSize="large" />
+          </Avatar>
+          <Typography variant="h5" fontWeight="bold" color="#1a237e" mb={1}>
+            Iniciar Sesión
+          </Typography>
+          <Typography variant="body2" color="text.secondary" mb={2}>
+            Consulta Centralizada de Información de Casos DFC
+          </Typography>
+        </Box>
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-
-        <Stack component="form" spacing={2} onSubmit={submit}>
-          <TextField label="Usuario" name="username" value={form.username} onChange={onChange} required />
-          {isRegister && (
-            <TextField label="Correo (opcional)" name="email" value={form.email} onChange={onChange} />
-          )}
-          <TextField label="Contraseña" name="password" type="password" value={form.password} onChange={onChange} required />
-          <Button type="submit" variant="contained" disabled={loading}>
-            {loading ? 'Procesando...' : isRegister ? 'Crear cuenta' : 'Entrar'}
+        <form onSubmit={handleSubmit}>
+          <TextField label="Usuario" variant="outlined" fullWidth autoFocus margin="normal"
+            value={username} onChange={(e) => setUsername(e.target.value)} />
+          <TextField label="Contraseña" variant="outlined" fullWidth margin="normal" type="password" slotProps={{ input: { endAdornment: null } }}
+            value={password} onChange={(e) => setPassword(e.target.value)} />
+          <Button type="submit" fullWidth variant="contained" sx={loginPageStyles.button} disabled={loading}>
+            {loading ? 'Cargando...' : 'Entrar'}
           </Button>
-          <Button type="button" onClick={() => setIsRegister((v) => !v)}>
-            {isRegister ? 'Ya tengo cuenta' : 'No tengo cuenta'}
-          </Button>
-        </Stack>
+        </form>
       </Paper>
     </Box>
   );

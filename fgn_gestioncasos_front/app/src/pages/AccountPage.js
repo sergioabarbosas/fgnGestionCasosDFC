@@ -10,19 +10,26 @@ export default function AccountPage({ user, onLogout }) {
 
   const onChangePass = async (e) => {
     e.preventDefault();
-    setMsg(''); setErr('');
+    setMsg('');
+    setErr('');
     try {
       await changePassword({ old_password, new_password });
       setMsg('Contraseña actualizada.');
-      setOld(''); setNew('');
+      setOld('');
+      setNew('');
     } catch (e2) {
       setErr(e2.message);
     }
   };
 
   const onSignOut = async () => {
-    await logout();
-    onLogout();
+    try {
+      await logout(); // POST /api/auth/logout/
+    } catch (_) {
+      // aunque falle el backend, cerramos sesión local
+    } finally {
+      onLogout(); // setUser(null)
+    }
   };
 
   return (
@@ -35,7 +42,11 @@ export default function AccountPage({ user, onLogout }) {
           <TextField label="Contraseña actual" type="password" value={old_password} onChange={(e) => setOld(e.target.value)} required />
           <TextField label="Nueva contraseña" type="password" value={new_password} onChange={(e) => setNew(e.target.value)} required />
           <Button type="submit" variant="contained">Cambiar contraseña</Button>
-          <Button color="error" variant="outlined" onClick={onSignOut}>Sign out</Button>
+
+          <Button color="error" variant="outlined" onClick={onSignOut}>
+            Cerrar sesión
+          </Button>
+
         </Stack>
       </Box>
     </Paper>

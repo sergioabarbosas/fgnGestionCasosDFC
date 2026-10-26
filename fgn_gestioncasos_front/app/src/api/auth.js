@@ -1,4 +1,4 @@
-const API = 'http://localhost:8050/api/auth';
+const API = '/api/auth';
 
 export const getCookie = (name) => {
   const value = `; ${document.cookie}`;
@@ -28,6 +28,7 @@ export const register = async (payload) => {
     body: JSON.stringify(payload),
   });
 };
+
 export const login = async (payload) => {
   await ensureCsrf();
   return jsonFetch(`${API}/login/`, {
@@ -36,6 +37,7 @@ export const login = async (payload) => {
     body: JSON.stringify(payload),
   });
 };
+
 export const logout = async () => {
   await ensureCsrf();
   return jsonFetch(`${API}/logout/`, {
@@ -43,6 +45,7 @@ export const logout = async () => {
     headers: { 'X-CSRFToken': getCookie('csrftoken') || '' },
   });
 };
+
 export const changePassword = async (payload) => {
   await ensureCsrf();
   return jsonFetch(`${API}/change-password/`, {
