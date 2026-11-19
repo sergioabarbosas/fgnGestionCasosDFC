@@ -9,8 +9,11 @@ services:
     ports:
       - "3050:3050"
     environment:
-      - REACT_APP_API_URL=http://localhost:8050
+      - HOST=0.0.0.0
       - PORT=3050
+      - DANGEROUSLY_DISABLE_HOST_CHECK=true
+      - WATCHPACK_POLLING=true
+      - CHOKIDAR_USEPOLLING=true
     depends_on:
       - web
     networks:
@@ -99,6 +102,7 @@ services:
       - ./fgn_gestioncasos_back/.env
     volumes:
       - ./fgn_gestioncasos_back:/app
+      - ./logs:/app/logs
     ports:
       - "8050:8050"
     depends_on:
@@ -155,6 +159,7 @@ networks:
     driver: bridge
 
 volumes:
+  #logs:
   mysql_data:
   clickhouse_data:
   clickhouse_logs:
