@@ -10,7 +10,7 @@ import { getBadgeColor, getCount  } from './BadgeColor';
 
 
 const SOURCE_COMPONENTS = {
-  casos: CasosBusqueda,
+  aplica: CasosBusqueda,
   gic: GicBusqueda,
   uiaf: UIAFBusqueda,
   bienes: BienesBusqueda

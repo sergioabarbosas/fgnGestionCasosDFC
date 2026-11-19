@@ -28,7 +28,7 @@ function primeraMayus(str) {
 
 
 export default function ResultCard({ item, source, selected, onSelect, searchTerms = [] }) {
-  if (source === 'casos') {
+  if (source === 'aplica') {
     return (
       <Card
         variant="outlined"

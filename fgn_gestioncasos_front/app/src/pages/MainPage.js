@@ -12,7 +12,7 @@ import AccountMenu from '../components/AccountMenu';
 import { getCookie, ensureCsrf } from '../api/auth';
 
 
-const ALL_SOURCES = ['casos', 'uiaf', 'gic', 'bienes'];
+const ALL_SOURCES = ['aplica', 'uiaf', 'gic', 'bienes'];
 
 export default function MainPage({ user, onLogout }) {
 
@@ -50,6 +50,8 @@ export default function MainPage({ user, onLogout }) {
     });
 
     const data = await res.json().catch(() => ({}));
+    console.info("Datos response: ", data)
+
     if (!res.ok) {
       throw new Error(data.error || `Error ${res.status} al consultar el servidor`);
     }
@@ -76,7 +78,7 @@ export default function MainPage({ user, onLogout }) {
     try {
       const data = await doFetch({ 
         libre: query,   // busqueda en hecho libre en back version 00
-        fuentes: selectedSources // selectedSources.map((s) => (s === 'aplica' ? 'casos' : s)) // ***** priovisonal
+        fuentes: selectedSources // selectedSources.map((s) => (s === 'aplica' ? 'aplica' : s)) // ***** priovisonal
       }); // selectedSources
 
       setResults(data);
@@ -96,6 +98,7 @@ export default function MainPage({ user, onLogout }) {
         resultados={results}
         loading={loading}
         selectedSources={selectedSources}
+        onLogout={onLogout}
         onBack={() => {
             setHasSearched(false);
             setResults(null);

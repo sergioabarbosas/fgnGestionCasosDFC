@@ -39,7 +39,7 @@ export default function ChangePasswordPage({ user, onDone }) {
             Cambio de contraseña
           </Typography>
           <Typography variant="body2" color="text.secondary" mb={4}>
-            Consulta Centralizada de Información de Casos DFC
+            Consulta Centralizada de Información DFC
           </Typography>
         </Box>
 

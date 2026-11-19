@@ -32,7 +32,7 @@ export default function Header({ onLogout }) {
                 Consulta Centralizada de Información
               </Typography>
               <Typography variant="subtitle2" sx={{ fontStyle: 'italic', color: '#fff' }}>
-                Aplicativo orientativo para la consulta de casos de la DFC.
+                Aplicativo orientativo para la consulta de la DFC.
               </Typography>
             </Box>
           </Box>

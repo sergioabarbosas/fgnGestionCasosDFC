@@ -39,7 +39,7 @@ export default function AuthPage({ onAuth }) {
             Iniciar Sesión
           </Typography>
           <Typography variant="body2" color="text.secondary" mb={2}>
-            Consulta Centralizada de Información de Casos DFC
+            Consulta Centralizada de Información DFC
           </Typography>
         </Box>
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}

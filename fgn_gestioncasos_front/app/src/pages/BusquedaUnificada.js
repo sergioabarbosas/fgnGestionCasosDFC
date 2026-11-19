@@ -7,7 +7,7 @@ import DetailPanel from '../components/search/DetailPanel';
 import Header from '../components/header';
 
 
-export default function BusquedaUnificada({ query = '', resultados = {}, loading = false, selectedSources=[], onBack }) {
+export default function BusquedaUnificada({ query = '', resultados = {}, loading = false, selectedSources=[], onBack, onLogout }) {
   const [activeSources, setActiveSources] = useState(selectedSources);
   const [selectedItem, setSelectedItem] = useState(null);
 
@@ -43,7 +43,7 @@ export default function BusquedaUnificada({ query = '', resultados = {}, loading
 
     <Box sx={{ height: '100vh', overflow: "hidden", display: 'flex', flexDirection: 'column', bgcolor: '#f4f7f9' }}>
 
-    <Header/>
+    <Header onLogout={onLogout} />
 
       <SearchTopBar
         query={query}

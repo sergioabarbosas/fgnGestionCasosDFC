@@ -76,7 +76,8 @@ export default function SearchTopBar({
             opacity: 0.7,
           },
         }}
-        InputProps={{
+        slotProps={{
+          input:{
           startAdornment: (
             <InputAdornment position="start">
               <SearchIcon fontSize="small" />
@@ -87,6 +88,7 @@ export default function SearchTopBar({
               <CircularProgress size={18} />
             </InputAdornment>
           ) : null,
+          }
         }}
       />
 
