@@ -30,7 +30,9 @@ INSTALLED_APPS = [
     "rest_framework",
     'usuarios.apps.UsuariosConfig',
     # busqueda endpoint
-    'busqueda.apps.BusquedaConfig',
+    'busqueda.apps.BusquedaConfig', # app consulta
+    # auditoria
+    'auditoria.apps.AuditoriaConfig'
 ]
 
 MIDDLEWARE = [
@@ -42,6 +44,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'auditoria.middleware.AuditMiddleware'
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -155,3 +158,28 @@ CLICKHOUSE_PASSWORD = env("CLICKHOUSE_PASSWORD", default="")
 CLICKHOUSE_HOST = env("CLICKHOUSE_HOST", default="clickhouse")
 CLICKHOUSE_PORT = env("CLICKHOUSE_PORT", default="9000")
 CLICKHOUSE_HTTP_PORT = env("CLICKHOUSE_HTTP_PORT", default="8123")
+
+
+import os
+LOG_DIR = os.path.join(BASE_DIR, "logs")
+os.makedirs(LOG_DIR, exist_ok=True)
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {"plain": {"format": "%(asctime)s %(levelname)s %(name)s %(message)s"}},
+    "handlers": {
+        "console": {"class": "logging.StreamHandler", "formatter": "plain"},
+        "audit_file": {
+            "class": "logging.handlers.TimedRotatingFileHandler",
+            "filename": os.path.join(LOG_DIR, "audit.log"),
+            "when": "midnight",
+            "backupCount": 365,
+            "encoding": "utf-8",
+            "formatter": "plain",
+        },
+    },
+    "loggers": {
+        "audit": {"handlers": ["audit_file", "console"], "level": "INFO", "propagate": False},
+    },
+}

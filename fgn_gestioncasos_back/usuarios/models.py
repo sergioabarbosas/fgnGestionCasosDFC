@@ -9,7 +9,7 @@ class User(AbstractUser):
         permissions = [
             ("ver_uiaf", "Puede consultar UIAF"),
             ("ver_gic", "Puede consultar GIC"),
-            ("ver_casos", "Puede consultar Casos"),
+            ("ver_aplica", "Puede consultar APLICA"),
             ("ver_bienes", "Puede consultar Bienes"),
         ]
 

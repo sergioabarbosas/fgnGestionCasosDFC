@@ -12,6 +12,6 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='user',
-            options={'permissions': [('ver_uiaf', 'Puede consultar UIAF'), ('ver_gic', 'Puede consultar GIC'), ('ver_casos', 'Puede consultar Casos'), ('ver_bienes', 'Puede consultar Bienes')]},
+            options={'permissions': [('ver_uiaf', 'Puede consultar UIAF'), ('ver_gic', 'Puede consultar GIC'), ('ver_aplica', 'Puede consultar Aplica'), ('ver_bienes', 'Puede consultar Bienes')]},
         ),
     ]

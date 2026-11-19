@@ -17,7 +17,7 @@ def user_data(user):
         "is_superuser": user.is_superuser,
         "roles": list(user.groups.values_list("name", flat=True)),
         "fuentes": [
-            f for f in ("uiaf", "gic", "casos", "bienes")
+            f for f in ("uiaf", "gic", "aplica", "bienes")
             if user.has_perm(f"usuarios.ver_{f}")
         ],
     }

@@ -2,8 +2,8 @@ from django.contrib.auth.models import Group, Permission
 from django.core.management.base import BaseCommand
 
 ROLES = {
-    "gic_admin": ["ver_uiaf", "ver_gic", "ver_casos", "ver_bienes"],
-    "gic_user": ["ver_uiaf", "ver_gic", "ver_casos"],
+    "gic_admin": ["ver_uiaf", "ver_gic", "ver_aplica", "ver_bienes"],
+    "gic_user": ["ver_uiaf", "ver_gic", "ver_aplica"],
 }
 
 class Command(BaseCommand):

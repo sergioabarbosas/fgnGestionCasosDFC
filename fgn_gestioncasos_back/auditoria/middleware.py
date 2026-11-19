@@ -67,10 +67,18 @@ class AuditMiddleware:
             except (ValueError, UnicodeDecodeError):
                 body = {"_raw": "no-json"}
 
+        pre_user = getattr(request, "user", None)
+        pre_username = pre_user.get_username() if pre_user and pre_user.is_authenticated else None
+        pre_user_obj = pre_user if pre_username else None
+
         response = self.get_response(request)
 
         user = getattr(request, "user", None)
+        
         authenticated = bool(user and user.is_authenticated)
+        if not authenticated and pre_user_obj:
+            user, authenticated = pre_user_obj, True
+
         duration = int((time.monotonic() - start) * 1000)
 
         # Captura respuesta
@@ -96,7 +104,8 @@ class AuditMiddleware:
         # Log de archivo (metadata, no respuesta completa)
         entry = {
             "request_id": str(request_id),
-            "username": user.username if authenticated else "anonymous",
+            # "username": user.username if authenticated else "anonymous",
+            "username": user.get_username() if authenticated else "anonymous",
             "ip": _client_ip(request),
             "method": request.method,
             "path": request.path,
